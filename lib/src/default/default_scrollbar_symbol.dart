@@ -33,19 +33,40 @@ class DefaultScrollbarSymbol extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyle = switch (state) {
       AlphabetScrollbarItemState.active => styleActive ??
-          TextStyle(color: Theme.of(context).colorScheme.secondary),
+          TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+          ),
       AlphabetScrollbarItemState.inactive =>
-        styleInactive ?? const TextStyle(color: Colors.black),
+        styleInactive ?? TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.normal,
+          fontSize: 12,
+        ),
       AlphabetScrollbarItemState.deactivated =>
-        styleDeactivated ?? const TextStyle(color: Colors.grey),
+        styleDeactivated ?? TextStyle(
+          color: Colors.grey.withOpacity(0.5),
+          fontWeight: FontWeight.normal,
+          fontSize: 11,
+        ),
     };
 
-    return FittedBox(
-      fit: BoxFit.scaleDown,
-      child: Text(
-        symbol,
-        style: textStyle,
-        textAlign: TextAlign.center,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+      decoration: state == AlphabetScrollbarItemState.active
+          ? BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+            )
+          : null,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Text(
+          symbol,
+          style: textStyle,
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }

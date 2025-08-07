@@ -3,7 +3,6 @@ import 'package:alphabet_list_view/src/controller.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 /// AlphabetList
 class AlphabetList extends StatefulWidget {
@@ -109,34 +108,35 @@ class _AlphabetListState extends State<AlphabetList> {
             SliverToBoxAdapter(
               child: widget.alphabetListOptions.beforeList,
             ),
-            ...widget.items.map(
-              (item) {
-                final bool useHeaderForEmptySection = widget.alphabetListOptions
-                        .showSectionHeaderForEmptySections ||
-                    !((item.childrenDelegate.estimatedChildCount ?? 0) == 0);
-                final Widget header =
-                    widget.alphabetListOptions.showSectionHeader &&
-                            useHeaderForEmptySection
-                        ? Semantics(
-                            header: true,
-                            child: widget.alphabetListOptions.listHeaderBuilder
-                                    ?.call(context, item.tag) ??
-                                DefaultAlphabetListHeader(
-                                  symbol: item.tag,
-                                ),
-                          )
-                        : const SizedBox.shrink();
+            ...widget.items.expand((item) {
+              final bool useHeaderForEmptySection = widget.alphabetListOptions
+                      .showSectionHeaderForEmptySections ||
+                  !((item.childrenDelegate.estimatedChildCount ?? 0) == 0);
+              final Widget header =
+                  widget.alphabetListOptions.showSectionHeader &&
+                          useHeaderForEmptySection
+                      ? Semantics(
+                          header: true,
+                          child: widget.alphabetListOptions.listHeaderBuilder
+                                  ?.call(context, item.tag) ??
+                              DefaultAlphabetListHeader(
+                                symbol: item.tag,
+                              ),
+                        )
+                      : const SizedBox.shrink();
 
-                return SliverStickyHeader(
-                  header: Container(key: item.key),
-                  sliver: SliverStickyHeader(
-                    header: Container(child: header),
-                    sliver: SliverList(delegate: item.childrenDelegate),
-                    sticky: widget.alphabetListOptions.stickySectionHeader,
+              return [
+                // Header
+                SliverToBoxAdapter(
+                  child: Container(
+                    key: item.key,
+                    child: header,
                   ),
-                );
-              },
-            ),
+                ),
+                // Items
+                SliverList(delegate: item.childrenDelegate),
+              ];
+            }).toList(),
             SliverToBoxAdapter(child: widget.alphabetListOptions.afterList),
           ],
         ),

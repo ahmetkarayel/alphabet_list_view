@@ -64,12 +64,28 @@ class _AlphabetScrollbarState extends State<AlphabetScrollbar> {
   @override
   void initState() {
     super.initState();
-    _uniqueItems = widget.alphabetScrollbarOptions.symbols.toSet().toList();
+    _updateUniqueItems();
+    widget.symbolChangeNotifierList
+        .addListener(_symbolChangeNotifierListListener);
+  }
+
+  void _updateUniqueItems() {
+    List<String> allSymbols = widget.alphabetScrollbarOptions.symbols.toSet().toList();
+    
+    if (widget.alphabetScrollbarOptions.hideEmptySymbols) {
+      // Filter out symbols that don't have any data
+      _uniqueItems = allSymbols.where((symbol) {
+        final itemsWithSymbol = widget.items.where((item) => item.tag == symbol);
+        return itemsWithSymbol.isNotEmpty && 
+               (itemsWithSymbol.first.childrenDelegate.estimatedChildCount ?? 0) > 0;
+      }).toList();
+    } else {
+      _uniqueItems = allSymbols;
+    }
+    
     _symbolKeys = {
       for (final symbol in _uniqueItems) symbol: GlobalKey(),
     };
-    widget.symbolChangeNotifierList
-        .addListener(_symbolChangeNotifierListListener);
   }
 
   @override
@@ -122,10 +138,7 @@ class _AlphabetScrollbarState extends State<AlphabetScrollbar> {
   @override
   void didUpdateWidget(covariant AlphabetScrollbar oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _uniqueItems = widget.alphabetScrollbarOptions.symbols.toSet().toList();
-    _symbolKeys = {
-      for (final symbol in _uniqueItems) symbol: GlobalKey(),
-    };
+    _updateUniqueItems();
   }
 
   @override

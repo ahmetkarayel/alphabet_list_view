@@ -125,15 +125,26 @@ class _AlphabetListViewState extends State<AlphabetListView> {
   List<AlphabetListViewItemGroup> _generateAfterSymbolsSortedList(
     Iterable<AlphabetListViewItemGroup> items,
     List<String> symbols,
-  ) =>
-      symbols
-          .map(
-            (symbol) => items.firstWhere(
-              (item) => item.tag == symbol,
-              orElse: () => AlphabetListViewItemGroup(tag: symbol),
-            ),
-          )
-          .toList();
+  ) {
+    // If hideEmptySymbols is enabled, filter symbols to only include those with data
+    List<String> effectiveSymbols = symbols;
+    if (widget.options.scrollbarOptions.hideEmptySymbols) {
+      effectiveSymbols = symbols.where((symbol) {
+        final itemsWithSymbol = items.where((item) => item.tag == symbol);
+        return itemsWithSymbol.isNotEmpty && 
+               (itemsWithSymbol.first.childrenDelegate.estimatedChildCount ?? 0) > 0;
+      }).toList();
+    }
+    
+    return effectiveSymbols
+        .map(
+          (symbol) => items.firstWhere(
+            (item) => item.tag == symbol,
+            orElse: () => AlphabetListViewItemGroup(tag: symbol),
+          ),
+        )
+        .toList();
+  }
 }
 
 /// Item groups shown in the list.

@@ -16,7 +16,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_sticky_header: ^0.7.0
 
 dev_dependencies:
   flutter_test:

@@ -68,6 +68,18 @@ final String alphabet = DefaultScrollbarSymbols.alphabet;
 
 ## Customization options
 
+### Hide Empty Symbols
+
+You can hide symbols that don't have any data by setting `hideEmptySymbols: true` in the `ScrollbarOptions`:
+
+```dart
+scrollbarOptions: const ScrollbarOptions(
+  hideEmptySymbols: true, // Only show symbols with actual data
+),
+```
+
+This is particularly useful when you have a large alphabet but only a few letters have data, making the scrollbar more compact and user-friendly.
+
 ```dart
 final List<AlphabetListViewItemGroup> tech = [
   AlphabetListViewItemGroup(
@@ -103,6 +115,7 @@ final AlphabetListViewOptions options = AlphabetListViewOptions(
   ),
   scrollbarOptions: const ScrollbarOptions(
     backgroundColor: Colors.yellow,
+    hideEmptySymbols: true, // Only show symbols that have data
   ),
   overlayOptions: const OverlayOptions(
     showOverlay: false,

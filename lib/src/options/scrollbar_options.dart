@@ -14,6 +14,7 @@ class ScrollbarOptions {
     this.forcePosition,
     this.symbolBuilder,
     this.decoration,
+    this.hideEmptySymbols = false,
   }) : assert(
           backgroundColor == null || decoration == null,
           'Cannot provide both a color and a decoration\n'
@@ -52,4 +53,9 @@ class ScrollbarOptions {
 
   /// Decoration for the sidebar.
   final Decoration? decoration;
+
+  /// Hide symbols that don't have any data.
+  ///
+  /// When true, only symbols with actual items will be shown in the scrollbar.
+  final bool hideEmptySymbols;
 }
